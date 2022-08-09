@@ -8,6 +8,7 @@ function twurl_cursor(){
         next_cursor=$(echo $result | jq -r '.next_cursor_str')
         errors=$(echo $result | jq -c .errors)
         if [ "$errors" != "null" ];then
+            echo "rate limit detected" > /dev/stderr
             continue
         fi
         echo "$result"

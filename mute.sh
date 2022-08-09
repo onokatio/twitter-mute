@@ -13,9 +13,9 @@ while read line ;do
     echo "finish"
 done
 
-target_count=$(jq '[inputs] | sort_by(.statuses_count) | reverse' list_*.json | jq -r '.[].screen_name' | wc -l)
+target_count=$(jq '[inputs] | sort_by(.statuses_count) | reverse' list_*.json | jq -r '.[] | select(.following == true) | .screen_name' | wc -l)
 count=0
-jq '[inputs] | sort_by(.statuses_count) | reverse' list_*.json | jq -r '.[].screen_name' | \
+jq '[inputs] | sort_by(.statuses_count) | reverse' list_*.json | jq -r ' .[] | select(.following == true) | .screen_name' | \
 while read line
 do
     count=$((count+1))
@@ -24,5 +24,5 @@ do
         echo "Already muted. Skipping."
         continue
     fi
-    twurl_cursor --username "onokatio_" -d "screen_name=$line" "/1.1/mutes/users/create.json" | jq -r '.[].screen_name'
+    twurl_cursor --username "onokatio_" -d "screen_name=$line" "/1.1/mutes/users/create.json" >>log.txt
 done
